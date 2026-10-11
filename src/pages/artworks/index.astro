@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Grid from '../../components/Grid.astro';
+import Filters from '../../components/Filters.astro';
+import { FILTERS } from '../../site';
+
+const works = (await getCollection('artworks', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order || (b.data.year ?? 0) - (a.data.year ?? 0),
+);
+---
+
+<Base title="Artworks">
+  <Filters filters={FILTERS} all="Todo" label="Filtrar trabajos" />
+
+  {works.length > 0 ? <Grid entries={works} base="/artworks" /> : <p class="empty">Trabajos en carga.</p>}
+</Base>

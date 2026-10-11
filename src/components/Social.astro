@@ -1,0 +1,42 @@
+---
+// Íconos de redes sociales del header (aparecen en todas las páginas)
+import { SITE } from '../site';
+---
+
+<ul class="social">
+  {SITE.instagram && (
+    <li>
+      <a href={SITE.instagram} aria-label="Instagram" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+          <circle cx="12" cy="12" r="4.3" />
+          <circle cx="17.6" cy="6.4" r="0.6" fill="currentColor" />
+        </svg>
+      </a>
+    </li>
+  )}
+  {SITE.spotify && (
+    <li>
+      <a href={SITE.spotify} aria-label="Spotify" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="11.5" fill="currentColor" />
+          <g fill="none" stroke="#fff" stroke-linecap="round">
+            <path d="M6.2 9.3c3.9-1.2 8.4-.9 12 1.1" stroke-width="1.9" />
+            <path d="M6.9 12.6c3.2-.9 6.8-.6 9.7 1" stroke-width="1.6" />
+            <path d="M7.5 15.7c2.6-.7 5.3-.5 7.6.8" stroke-width="1.3" />
+          </g>
+        </svg>
+      </a>
+    </li>
+  )}
+  {SITE.youtube && (
+    <li>
+      <a href={SITE.youtube} aria-label="YouTube" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="0.5" y="4" width="23" height="16" rx="4.5" fill="currentColor" />
+          <path d="M9.6 8.4v7.2l6.2-3.6z" fill="#fff" />
+        </svg>
+      </a>
+    </li>
+  )}
+</ul>

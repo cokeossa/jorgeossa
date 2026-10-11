@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { SITE } from '../site';
 import TuningPanel from '../components/TuningPanel.astro';
+import Social from '../components/Social.astro';
 
 interface Props {
   title?: string;
@@ -16,7 +17,7 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
 const path = Astro.url.pathname;
 
 const menu = [
-  { href: '/', label: 'Artworks', active: path === '/' || path.startsWith('/artworks') },
+  { href: '/artworks/', label: 'Artworks', active: path.startsWith('/artworks') },
   { href: '/photography/', label: 'Photography', active: path.startsWith('/photography') },
   { href: '/about/', label: 'About', active: path.startsWith('/about') },
   { href: '/contact/', label: 'Contact', active: path.startsWith('/contact') },
@@ -51,10 +52,12 @@ const menu = [
           ))}
         </ul>
       </nav>
+      <Social />
     </header>
     <main>
       <slot />
     </main>
+    <footer class="footer">© {new Date().getFullYear()}</footer>
     {import.meta.env.DEV && <TuningPanel />}
   </body>
 </html>

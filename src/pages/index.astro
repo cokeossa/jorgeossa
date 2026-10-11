@@ -1,17 +1,24 @@
 ---
-import { getCollection } from 'astro:content';
+// Inicio: una sola foto, centrada, como en photobyjos.com
+import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Grid from '../components/Grid.astro';
-import Filters from '../components/Filters.astro';
-import { FILTERS } from '../site';
+import { IMAGE_QUALITY } from '../site';
+import foto from '../assets/inicio.jpg';
 
-const works = (await getCollection('artworks', ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.order - b.data.order || (b.data.year ?? 0) - (a.data.year ?? 0),
-);
+const og = await getImage({ src: foto, width: 1200, format: 'jpg' });
 ---
 
-<Base>
-  <Filters filters={FILTERS} all="Todo" label="Filtrar trabajos" />
-
-  {works.length > 0 ? <Grid entries={works} base="/artworks" /> : <p class="empty">Trabajos en carga.</p>}
+<Base image={og.src}>
+  <div class="home">
+    <Image
+      src={foto}
+      alt="Atardecer en Pucón"
+      quality={IMAGE_QUALITY}
+      widths={[800, 1200, 1800, 2500]}
+      sizes="(min-width: 800px) 60vw, 100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </div>
 </Base>
