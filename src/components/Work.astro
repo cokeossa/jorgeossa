@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
+import { embedUrl } from '../site';
+
+interface Props {
+  entry: CollectionEntry<'artworks' | 'personal'>;
+}
+
+const { entry } = Astro.props;
+const { title, year, client, description, cover, gallery, video } = entry.data;
+const embed = video ? embedUrl(video) : null;
+const { Content } = await render(entry);
+---
+
+<article class="work">
+  {embed ? (
+    <div class="video">
+      <iframe src={embed} title={title} allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  ) : (
+    <Image src={cover} alt={title} widths={[700, 1200, 1800, 2500]} sizes="(min-width: 1164px) 1100px, 100vw" loading="eager" />
+  )}
+
+  <div class="work-info">
+    <h1>{title}</h1>
+    <p class="muted">{[year, client].filter(Boolean).join(' · ')}</p>
+    {description && <p>{description}</p>}
+    <Content />
+  </div>
+
+  {gallery.length > 0 && (
+    <div class="work-gallery">
+      {gallery.map((img) => (
+        <Image src={img} alt={title} widths={[700, 1200, 1800, 2500]} sizes="(min-width: 1164px) 1100px, 100vw" />
+      ))}
+    </div>
+  )}
+</article>

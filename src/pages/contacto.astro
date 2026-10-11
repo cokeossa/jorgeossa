@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site';
+---
+
+<Base title="Contacto">
+  <ul>
+    {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
+    {SITE.instagram && <li><a href={SITE.instagram}>Instagram</a></li>}
+    {SITE.vimeo && <li><a href={SITE.vimeo}>Vimeo</a></li>}
+    <li class="muted">{SITE.city}</li>
+  </ul>
+</Base>

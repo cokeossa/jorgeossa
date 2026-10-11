@@ -1,0 +1,18 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Work from '../../components/Work.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('personal', ({ data }) => !data.draft);
+  return projects.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<'personal'> };
+const og = await getImage({ src: entry.data.cover, width: 1200, format: 'jpg' });
+---
+
+<Base title={entry.data.title} description={entry.data.description} image={og.src}>
+  <Work entry={entry} />
+</Base>

@@ -1,0 +1,30 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entries: CollectionEntry<'artworks' | 'personal'>[];
+  base: string; // '/artworks' o '/personal'
+}
+
+const { entries, base } = Astro.props;
+---
+
+<ul class="grid">
+  {entries.map((entry, i) => (
+    <li data-filters={'filters' in entry.data ? entry.data.filters.join(' ') : undefined}>
+      <a href={`${base}/${entry.id}/`}>
+        <div class="cover">
+          <Image
+            src={entry.data.cover}
+            alt={entry.data.title}
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 800px) 33vw, 50vw"
+            loading={i < 6 ? 'eager' : 'lazy'}
+          />
+        </div>
+        <p class="title">{entry.data.title}</p>
+      </a>
+    </li>
+  ))}
+</ul>

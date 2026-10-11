@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Grid from '../components/Grid.astro';
+import { FILTERS } from '../site';
+
+const works = (await getCollection('artworks', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order || b.data.year - a.data.year,
+);
+---
+
+<Base>
+  <div class="filters" role="group" aria-label="Filtrar trabajos">
+    <button type="button" data-filter="all" aria-pressed="true">Todo</button>
+    {FILTERS.map((f) => <button type="button" data-filter={f.id} aria-pressed="false">{f.label}</button>)}
+  </div>
+
+  {works.length > 0 ? <Grid entries={works} base="/artworks" /> : <p class="empty">Trabajos en carga.</p>}
+</Base>
+
+<script>
+  // Filtro de la grilla: muestra solo los trabajos que tienen el filtro elegido.
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filters button');
+  const items = document.querySelectorAll<HTMLElement>('.grid li');
+
+  function apply(filter: string) {
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+    items.forEach((li) => {
+      li.hidden = filter !== 'all' && !li.dataset.filters?.split(' ').includes(filter);
+    });
+  }
+
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const filter = b.dataset.filter!;
+      history.replaceState(null, '', filter === 'all' ? location.pathname : `#${filter}`);
+      apply(filter);
+    }),
+  );
+
+  const initial = location.hash.slice(1);
+  if ([...buttons].some((b) => b.dataset.filter === initial)) apply(initial);
+</script>
