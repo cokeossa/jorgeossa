@@ -47,7 +47,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+/* scrollbar-gutter: reserva siempre el espacio de la barra de desplazamiento, para que el header
+   (y las redes, pegadas a la derecha) no se corra 15px entre páginas cortas y largas */
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
 
 body {
   margin: 0;
@@ -85,7 +87,9 @@ ul { padding: 0; list-style: none; }
 .header nav ul { display: flex; flex-wrap: wrap; gap: 4px var(--menu-gap); }
 .header [aria-current='page'] { text-decoration: underline; }
 /* Redes sociales: siempre arriba a la derecha (en celular, en la misma línea que JOS) */
-.social { display: flex; gap: 24px; margin-left: auto; align-self: center; }
+/* Anclados a la línea de base del texto del menú (no al alto del header), bajados 4px para
+   quedar centrados con las letras: así quedan a la misma altura en todas las páginas */
+.social { display: flex; gap: 24px; margin-left: auto; align-self: baseline; transform: translateY(4px); }
 .social a { display: block; line-height: 0; }
 .social svg { width: 20px; height: 20px; }
 @media (max-width: 799px) {
@@ -129,10 +133,18 @@ main { flex: 1; padding: 0 var(--margin) calc(var(--margin) * 3); }
 /* Ficha de trabajo */
 .work > :not([class^='gallery']) { max-width: 1100px; margin-left: auto; margin-right: auto; }
 /* Título y texto alineados con el borde izquierdo del video, en un ancho cómodo de lectura */
-.work-head { margin-bottom: 24px; }
-.work-text { margin-top: 32px; margin-bottom: 48px; }
+/* Ritmo vertical de las fichas (escala de 8px; cercanía = relación):
+   menú → título .......... --work-top (lo que más separa: navegación vs. contenido)
+   título → año/cliente ... 4px (son un mismo bloque)
+   bloque → bloque ........ --work-step (título, video, texto y galería: cada uno su grupo)
+   texto → galería ........ --work-step × 1.5 (pasar de leer a mirar pide una pausa mayor) */
+:root { --work-top: 48px; --work-step: 32px; }
+@media (min-width: 800px) { :root { --work-top: 96px; --work-step: 48px; } }
+.work { padding-top: var(--work-top); }
+.work > * + * { margin-top: var(--work-step); }
+.work > .work-text + [class^='gallery'] { margin-top: calc(var(--work-step) * 1.5); }
+.work-head > * + * { margin-top: 4px; }
 .work-head > *, .work-text > * { max-width: 640px; }
-.work-text:empty { display: none; }
 .work-text p + p { margin-top: 1em; }
 .work-text a { text-decoration: underline; }
 /* Galerías de las fichas (la disposición se define en cada index.md con galleryLayout) */
@@ -152,7 +164,7 @@ main { flex: 1; padding: 0 var(--margin) calc(var(--margin) * 3); }
   .gallery-free .box { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); }
   .gallery-free .box img { height: 100%; object-fit: cover; }
 }
-.video { position: relative; aspect-ratio: 16 / 9; margin-bottom: var(--gap); }
+.video { position: relative; aspect-ratio: 16 / 9; }
 .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 /* About */
@@ -173,7 +185,6 @@ main:has(.strips-page) { display: flex; padding-bottom: var(--margin); }
 .strip-panels { flex: 1; display: flex; align-items: center; min-width: 0; }
 .strip-panel { width: 100%; min-width: 0; }
 .strip-panel[hidden] { display: none; }
-.strip-caption { margin-bottom: 12px; }
 .strip-track {
   display: flex; gap: var(--strip-gap);
   overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;

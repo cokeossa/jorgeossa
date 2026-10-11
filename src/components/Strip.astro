@@ -11,12 +11,11 @@ interface Props {
 }
 
 const { entry, eager = false } = Astro.props;
-const { title, description, gallery } = entry.data;
+const { title, gallery } = entry.data;
 const H = 550; // alto de referencia en computador (el real lo define --strip-height)
 ---
 
 <div class="strip">
-  {description && <p class="strip-caption">{description}</p>}
   <div class="strip-track" tabindex="0" aria-label={title}>
     {gallery.map((img, i) => {
       const w = Math.round((H * img.width) / img.height);

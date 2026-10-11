@@ -18,6 +18,7 @@ const boxStyle = ([x, y, w, h]: number[]) =>
 const embed = video ? embedUrl(video) : null;
 const meta = [year, client].filter(Boolean).join(' · ');
 const { Content } = await render(entry);
+const hasText = Boolean(entry.body?.trim());
 ---
 
 <article class="work">
@@ -34,9 +35,11 @@ const { Content } = await render(entry);
     </div>
   )}
 
-  <div class="work-text">
-    <Content />
-  </div>
+  {hasText && (
+    <div class="work-text">
+      <Content />
+    </div>
+  )}
 
   {gallery.length > 0 && layout.type === 'free' && boxes.length === gallery.length && (
     <div class="gallery-free" style={`--free-height:${freeHeight}%`}>
