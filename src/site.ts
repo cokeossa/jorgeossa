@@ -17,6 +17,13 @@ export const FILTERS = [
   { id: 'commercial', label: 'Commercial' },
 ] as const;
 
+// Filtros de la página Personal (parte seleccionado el primero)
+export const PERSONAL_FILTERS = [
+  { id: 'personal', label: 'Personal' },
+  { id: 'palma-chilena', label: 'Palma Chilena' },
+  { id: 'barcelona', label: 'Barcelona' },
+] as const;
+
 // Convierte un link normal de Vimeo o YouTube en su versión para embeber.
 export function embedUrl(url: string): string | null {
   const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/(\w+))?/);

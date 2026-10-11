@@ -15,7 +15,7 @@ const { entries, base } = Astro.props;
     <li
       data-slug={entry.id}
       data-filters={'filters' in entry.data ? entry.data.filters.join(' ') : undefined}
-      style={entry.data.size ? `--item-size: ${entry.data.size}%` : undefined}
+      style={`view-transition-name: w-${entry.id};${entry.data.size ? ` --item-size: ${entry.data.size}%` : ''}`}
     >
       <a href={`${base}/${entry.id}/`} class="item">
         <div class="cover">

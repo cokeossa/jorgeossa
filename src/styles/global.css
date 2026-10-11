@@ -103,6 +103,11 @@ main { padding: 0 var(--margin) calc(var(--margin) * 3); }
 }
 .filters button[aria-pressed='true'] { color: var(--black); }
 
+/* Animación al filtrar: cada proyecto se desliza a su nuevo lugar; los que entran o salen se funden */
+::view-transition-group(*) { animation-duration: 0.45s; animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1); }
+::view-transition-old(*), ::view-transition-new(*) { animation-duration: 0.3s; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+
 /* Ficha de trabajo */
 .work > :not([class^='gallery']) { max-width: 1100px; margin-left: auto; margin-right: auto; }
 /* Título y texto alineados con el borde izquierdo del video, en un ancho cómodo de lectura */

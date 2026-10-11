@@ -1,0 +1,47 @@
+---
+// Línea de filtros sobre una grilla. Al elegir un filtro, los proyectos se reacomodan
+// con una animación suave (View Transitions). Sin soporte o con "reducir movimiento",
+// el cambio es instantáneo.
+interface Props {
+  filters: readonly { id: string; label: string }[];
+  all?: string; // texto del botón que muestra todo (ej. "Todo"); sin él, parte en el primer filtro
+  label: string;
+}
+
+const { filters, all, label } = Astro.props;
+const initial = all ? 'all' : filters[0]?.id;
+---
+
+<div class="filters" role="group" aria-label={label} data-initial={initial}>
+  {all && <button type="button" data-filter="all" aria-pressed="true">{all}</button>}
+  {filters.map((f) => <button type="button" data-filter={f.id} aria-pressed={String(f.id === initial)}>{f.label}</button>)}
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('.filters');
+  if (bar) {
+    const buttons = [...bar.querySelectorAll<HTMLButtonElement>('button')];
+    const items = document.querySelectorAll<HTMLElement>('.grid li');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const apply = (filter: string) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+      items.forEach((li) => {
+        li.hidden = filter !== 'all' && !li.dataset.filters?.split(' ').includes(filter);
+      });
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const filter = b.dataset.filter!;
+        if (b.getAttribute('aria-pressed') === 'true') return;
+        history.replaceState(null, '', filter === bar.dataset.initial ? location.pathname : `#${filter}`);
+        if (document.startViewTransition && !reduce) document.startViewTransition(() => apply(filter));
+        else apply(filter);
+      }),
+    );
+
+    const fromLink = location.hash.slice(1);
+    apply(buttons.some((b) => b.dataset.filter === fromLink) ? fromLink : bar.dataset.initial!);
+  }
+</script>

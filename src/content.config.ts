@@ -44,7 +44,10 @@ const artworks = defineCollection({
 
 const personal = defineCollection({
   loader: glob({ pattern: '*/index.md', base: './src/content/personal' }),
-  schema: ({ image }) => ficha({ image }),
+  schema: ({ image }) =>
+    ficha({ image }).extend({
+      filters: z.array(z.enum(['personal', 'palma-chilena', 'barcelona'])).default([]),
+    }),
 });
 
 export const collections = { artworks, personal };
