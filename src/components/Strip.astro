@@ -6,9 +6,10 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   entry: CollectionEntry<'personal'>;
+  eager?: boolean; // true solo en la tira visible al entrar: sus primeras fotos cargan de inmediato
 }
 
-const { entry } = Astro.props;
+const { entry, eager = false } = Astro.props;
 const { title, description, gallery } = entry.data;
 const H = 550; // alto de referencia en computador (el real lo define --strip-height)
 ---
@@ -19,7 +20,7 @@ const H = 550; // alto de referencia en computador (el real lo define --strip-he
     {gallery.map((img, i) => {
       const w = Math.round((H * img.width) / img.height);
       return (
-        <Image src={img} alt={title} widths={[Math.round(w * 0.6), w, w * 2]} sizes={`${w}px`} loading={i < 4 ? 'eager' : 'lazy'} />
+        <Image src={img} alt={title} widths={[Math.round(w * 0.6), w, w * 2]} sizes={`${w}px`} loading={eager && i < 4 ? 'eager' : 'lazy'} />
       );
     })}
   </div>

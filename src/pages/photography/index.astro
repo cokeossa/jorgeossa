@@ -17,7 +17,7 @@ const initial = panels.find((p) => p.items.length)?.id;
     <div class="strip-panels">
       {panels.map((p) => (
         <section class="strip-panel" data-filters={p.id} hidden={p.id !== initial}>
-          {p.items.length ? p.items.map((entry) => <Strip entry={entry} />) : <p class="empty">En carga.</p>}
+          {p.items.length ? p.items.map((entry) => <Strip entry={entry} eager={p.id === initial} />) : <p class="empty">En carga.</p>}
         </section>
       ))}
     </div>
