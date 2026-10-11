@@ -150,7 +150,7 @@ Recomendación: publicar el esqueleto en el dominio temprano (bloque 1) para que
 
 ## Preguntas abiertas
 
-- [x] Dominio: jorgeossa.com.
+- [x] Dominio: jorgeossa.com (Cloudflare DNS → Vercel). La dirección oficial es www.jorgeossa.com; jorgeossa.com redirige ahí.
 - [ ] Idioma del sitio: inglés, español o bilingüe.
 - [ ] Personal: página larga tipo fotolibro por proyecto, o misma ficha que Artworks.
 - [ ] Commercial: ¿incluye trabajos de Espacio Blanco y Pinot, o solo encargos de foto y video?
