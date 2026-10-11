@@ -15,6 +15,7 @@ const ficha = ({ image }: { image: () => any }) =>
     gallery: z.array(image()).default([]), // en orden
     video: z.string().url().optional(), // URL de Vimeo o YouTube
     order: z.number().default(0), // menor número = más arriba en la grilla
+    size: z.number().min(10).max(100).optional(), // % del ancho de su columna en la grilla (100 = completo)
     draft: z.boolean().default(false), // true = no se publica
     // Preparado para la tienda (aún no se usa): link de pago por obra
     buyUrl: z.string().url().optional(),

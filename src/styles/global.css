@@ -12,6 +12,7 @@
   --title-gap: 10px; /* espacio entre foto y nombre */
   --columns: 1;
   --cover-ratio: 3 / 2; /* proporción de las miniaturas */
+  --cover-size: 100%; /* tamaño de cada foto dentro de su columna */
   --header-top: 16px;
   --header-bottom: 16px; /* espacio bajo el header */
   --logo-gap: 48px; /* espacio entre JOS y el menú */
@@ -77,6 +78,7 @@ main { padding: 0 var(--margin) calc(var(--margin) * 3); }
   grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
   gap: var(--row-gap) var(--gap);
 }
+.grid .item { display: block; width: var(--item-size, var(--cover-size)); } /* parte siempre del borde izquierdo de su columna */
 .grid .cover { aspect-ratio: var(--cover-ratio); overflow: hidden; background: #f2f2f2; }
 .grid .cover img { width: 100%; height: 100%; object-fit: cover; }
 .grid .title { margin-top: var(--title-gap); font-size: var(--title-size); }

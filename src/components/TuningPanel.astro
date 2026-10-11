@@ -6,6 +6,7 @@ const controls = [
   { group: 'Grilla' },
   { v: '--columns', label: 'Columnas', min: 1, max: 6, unit: '' },
   { v: '--cover-ratio', label: 'Proporción', options: ['3 / 2', '4 / 3', '16 / 9', '5 / 4', '1 / 1', '4 / 5', '2 / 3'] },
+  { v: '--cover-size', label: 'Tamaño fotos', min: 30, max: 100, unit: '%' },
   { v: '--margin', label: 'Margen lateral', min: 0, max: 240 },
   { v: '--gap', label: 'Espacio entre fotos', min: 0, max: 160 },
   { v: '--row-gap', label: 'Espacio entre filas', min: 0, max: 240 },
@@ -45,6 +46,16 @@ const controls = [
         </label>
       ),
     )}
+    <p class="tp-group">Un proyecto</p>
+    <label class="tp-row">
+      <span>Proyecto</span>
+      <select id="tp-item" style="grid-column: span 2"></select>
+    </label>
+    <label class="tp-row">
+      <span>Su tamaño</span>
+      <input type="range" id="tp-item-size" min="30" max="100" step="1" />
+      <output></output>
+    </label>
     <div class="tp-actions">
       <button type="button" data-act="copy">Copiar valores</button>
       <button type="button" data-act="reset">Volver al inicio</button>
@@ -83,7 +94,7 @@ const controls = [
     const show = (el) => (el.nextElementSibling.textContent = el.value + (el.tagName === 'SELECT' ? '' : unitOf(el)));
 
     // Solo se fijan los valores que se movieron; el resto sigue el diseño normal.
-    for (const [v, val] of Object.entries(saved)) root.style.setProperty(v, val);
+    for (const [v, val] of Object.entries(saved)) if (v.startsWith('--')) root.style.setProperty(v, val);
 
     fields.forEach((el) => {
       const current = getComputedStyle(root).getPropertyValue(el.dataset.var).trim();
@@ -98,6 +109,38 @@ const controls = [
       });
     });
 
+    // Tamaño de un proyecto en particular (se guarda como 'item:<slug>')
+    const items = [...document.querySelectorAll('.grid li[data-slug]')];
+    const pick = document.getElementById('tp-item');
+    const size = document.getElementById('tp-item-size');
+    const itemSize = (li) => {
+      const own = li.style.getPropertyValue('--item-size');
+      return parseFloat(own || getComputedStyle(root).getPropertyValue('--cover-size'));
+    };
+    items.forEach((li) => {
+      const val = saved['item:' + li.dataset.slug];
+      if (val) li.style.setProperty('--item-size', val);
+      pick.add(new Option(li.querySelector('.title').textContent, li.dataset.slug));
+    });
+    const current = () => items.find((li) => li.dataset.slug === pick.value);
+    const syncItem = () => {
+      if (!current()) return;
+      size.value = itemSize(current());
+      size.nextElementSibling.textContent = size.value + '%';
+    };
+    pick.addEventListener('change', syncItem);
+    size.addEventListener('input', () => {
+      const val = size.value + '%';
+      current().style.setProperty('--item-size', val);
+      saved['item:' + pick.value] = val;
+      localStorage.setItem(KEY, JSON.stringify(saved));
+      size.nextElementSibling.textContent = val;
+    });
+    // Al mover "Tamaño fotos", el selector individual muestra el valor actualizado
+    panel.querySelector('[data-var="--cover-size"]').addEventListener('input', syncItem);
+    syncItem();
+    if (!items.length) pick.closest('label').parentElement.querySelectorAll('#tp-item, #tp-item-size').forEach((el) => (el.disabled = true));
+
     panel.addEventListener('click', (e) => {
       const act = e.target.dataset?.act;
       if (act === 'toggle') {
@@ -109,7 +152,8 @@ const controls = [
         location.reload();
       }
       if (act === 'copy') {
-        const text = [...fields].map((el) => `${el.dataset.var}: ${el.value}${unitOf(el)};`).join('\n');
+        const perItem = Object.entries(saved).filter(([k]) => k.startsWith('item:')).map(([k, v]) => `${k.slice(5)}: ${v}`);
+        const text = [...fields].map((el) => `${el.dataset.var}: ${el.value}${unitOf(el)};`).concat(perItem).join('\n');
         navigator.clipboard.writeText(`Ancho de pantalla: ${innerWidth}px\n${text}`);
         e.target.textContent = 'Copiado ✓';
         setTimeout(() => (e.target.textContent = 'Copiar valores'), 1500);

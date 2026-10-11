@@ -12,8 +12,12 @@ const { entries, base } = Astro.props;
 
 <ul class="grid">
   {entries.map((entry, i) => (
-    <li data-filters={'filters' in entry.data ? entry.data.filters.join(' ') : undefined}>
-      <a href={`${base}/${entry.id}/`}>
+    <li
+      data-slug={entry.id}
+      data-filters={'filters' in entry.data ? entry.data.filters.join(' ') : undefined}
+      style={entry.data.size ? `--item-size: ${entry.data.size}%` : undefined}
+    >
+      <a href={`${base}/${entry.id}/`} class="item">
         <div class="cover">
           <Image
             src={entry.data.cover}
