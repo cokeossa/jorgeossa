@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, heading, year, client, description, cover, gallery, video, galleryLayout: layout } = entry.data;
+const { title, heading, year, client, description, gallery, video, galleryLayout: layout } = entry.data;
 
 // Collage ("free"): las cajas vienen en % del ancho; el alto total se calcula con la caja más baja
 const boxes = layout.type === 'free' ? layout.boxes ?? [] : [];
@@ -27,12 +27,11 @@ const { Content } = await render(entry);
     {description && <p>{description}</p>}
   </header>
 
-  {embed ? (
+  {/* La portada solo se usa en la grilla de Artworks; dentro de la ficha no se muestra */}
+  {embed && (
     <div class="video">
       <iframe src={embed} title={title} allow="autoplay; fullscreen; picture-in-picture; clipboard-write" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
-  ) : (
-    <Image src={cover} alt={title} widths={[700, 1200, 1800, 2500]} sizes="(min-width: 1164px) 1100px, 100vw" loading="eager" />
   )}
 
   <div class="work-text">
