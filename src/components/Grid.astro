@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { IMAGE_QUALITY } from '../site';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -20,6 +21,7 @@ const { entries, base } = Astro.props;
       <a href={`${base}/${entry.id}/`} class="item">
         <div class="cover">
           <Image
+            quality={IMAGE_QUALITY}
             src={entry.data.cover}
             alt={entry.data.title}
             widths={[400, 700, 1000]}

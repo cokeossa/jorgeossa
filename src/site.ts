@@ -10,6 +10,10 @@ export const SITE = {
   city: 'Santiago, Chile',
 };
 
+// Calidad de compresión de las fotos (0–100). Astro usa 80 por defecto, lo que borra el grano
+// de película; con 92 las fotos quedan casi iguales al archivo, a costa de pesar ~2 veces más.
+export const IMAGE_QUALITY = 92;
+
 export const FILTERS = [
   { id: 'fotografia', label: 'Fotografía' },
   { id: 'video', label: 'Video' },

@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
-import { embedUrl } from '../site';
+import { embedUrl, IMAGE_QUALITY } from '../site';
 
 interface Props {
   entry: CollectionEntry<'artworks' | 'personal'>;
@@ -42,7 +42,7 @@ const { Content } = await render(entry);
     <div class="gallery-free" style={`--free-height:${freeHeight}%`}>
       {gallery.map((img, i) => (
         <div class="box" style={boxStyle(boxes[i])}>
-          <Image src={img} alt={title} widths={[500, 900, 1400, 2000]} sizes={`(min-width: 800px) ${Math.ceil(boxes[i][2])}vw, 100vw`} />
+          <Image quality={IMAGE_QUALITY} src={img} alt={title} widths={[500, 900, 1400, 2000]} sizes={`(min-width: 800px) ${Math.ceil(boxes[i][2])}vw, 100vw`} />
         </div>
       ))}
     </div>
@@ -51,7 +51,7 @@ const { Content } = await render(entry);
   {gallery.length > 0 && layout.type === 'grid' && (
     <div class="gallery-grid" style={`--g-columns:${layout.columns};--g-ratio:${layout.ratio ?? 'auto'}`}>
       {gallery.map((img) => (
-        <Image src={img} alt={title} widths={[400, 700, 1000, 1400]} sizes={`(min-width: 800px) ${Math.ceil(100 / layout.columns)}vw, 50vw`} />
+        <Image quality={IMAGE_QUALITY} src={img} alt={title} widths={[400, 700, 1000, 1400]} sizes={`(min-width: 800px) ${Math.ceil(100 / layout.columns)}vw, 50vw`} />
       ))}
     </div>
   )}
@@ -59,7 +59,7 @@ const { Content } = await render(entry);
   {gallery.length > 0 && (layout.type === 'stack' || (layout.type === 'free' && boxes.length !== gallery.length)) && (
     <div class="gallery-stack">
       {gallery.map((img) => (
-        <Image src={img} alt={title} widths={[700, 1200, 1800, 2500]} sizes="(min-width: 1164px) 1100px, 100vw" />
+        <Image quality={IMAGE_QUALITY} src={img} alt={title} widths={[700, 1200, 1800, 2500]} sizes="(min-width: 1164px) 1100px, 100vw" />
       ))}
     </div>
   )}
