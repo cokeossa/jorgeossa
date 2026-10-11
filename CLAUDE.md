@@ -1,4 +1,4 @@
-# New Website Workshop — jorgeossasilva.com
+# New Website Workshop — jorgeossa.com
 
 Brief para Claude Code. Este archivo resume las decisiones ya tomadas para construir el nuevo sitio de Jorge Ossa Silva (JOS). Léelo completo antes de empezar y úsalo como fuente de verdad durante todo el proyecto.
 
@@ -7,7 +7,7 @@ Brief para Claude Code. Este archivo resume las decisiones ya tomadas para const
 - JOS es director creativo, productor de video y fotógrafo, basado en Santiago, Chile.
 - Su sitio actual es **photobyjos.com**, en Squarespace, y muestra solo fotografía.
 - El nuevo sitio pasa de portafolio fotográfico a **presencia online completa**: currículum y portafolio de dirección creativa, video y fotografía.
-- Nuevo dominio: **jorgeossasilva.com** (pendiente de confirmar disponibilidad; ver Preguntas abiertas).
+- Nuevo dominio: **jorgeossa.com** (comprado el día del workshop). En pantalla se usa el seudónimo **JOS**.
 - Se construye en un solo día de trabajo (workshop, lunes feriado). Parte del objetivo es medir cuánto toma sacar el sitio.
 
 ## Objetivo del día
@@ -150,7 +150,7 @@ Recomendación: publicar el esqueleto en el dominio temprano (bloque 1) para que
 
 ## Preguntas abiertas
 
-- [ ] Dominio exacto: jorgeossasilva.com, .cl o ambos.
+- [x] Dominio: jorgeossa.com.
 - [ ] Idioma del sitio: inglés, español o bilingüe.
 - [ ] Personal: página larga tipo fotolibro por proyecto, o misma ficha que Artworks.
 - [ ] Commercial: ¿incluye trabajos de Espacio Blanco y Pinot, o solo encargos de foto y video?
