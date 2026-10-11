@@ -1,27 +1,64 @@
 ---
+// About: retrato fijo a la izquierda; a la derecha el texto y las credenciales, que es lo único
+// que se desplaza (inspirado en cesarpesquera.com/about). En celular, todo en una columna.
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import { IMAGE_QUALITY } from '../site';
+import retrato from '../assets/retrato.jpg';
+
+// TEXTO PROVISORIO, escrito por Claude a pedido de JOS: reemplazar por el texto de JOS.
+const bio = [
+  'I’m Jorge Ossa Silva — JOS — a creative director, video producer and photographer based in Santiago, Chile. My work moves between commissioned projects and long-term personal series, and it always starts from the same place: paying attention to what is in front of me.',
+  'Life is a series of moments, and the camera is how I keep them. After a year in Barcelona finishing my master’s, I came back to keep building documentary projects like Palma Chilena, while directing and shooting film and photography for others.',
+];
+
+// Credenciales. "—" = por completar.
+const sections = [
+  { title: 'Exhibitions', items: ['2026 — “Paisaje y Naturaleza”, Factoría Franklin'] },
+  { title: 'Awards', items: ['—'] },
+  { title: 'Collaborations', items: ['—'] },
+  { title: 'Clients', items: ['—'] },
+  { title: 'Education', items: ['—'] },
+];
 ---
 
 <Base title="About">
   <div class="about">
-    <div class="text">
-      <!-- Texto de JOS, en primera persona. Pendiente (bloque 12:00–13:00). -->
-      <p class="empty">Texto en preparación.</p>
+    <div class="about-photo">
+      <Image
+        src={retrato}
+        alt="Jorge Ossa Silva"
+        quality={IMAGE_QUALITY}
+        widths={[600, 900, 1300, 1666]}
+        sizes="(min-width: 800px) 40vw, 100vw"
+        loading="eager"
+      />
     </div>
 
-    <aside class="creds">
-      <section>
-        <h2>Colaboraciones</h2>
-        <ul><li class="empty">—</li></ul>
-      </section>
-      <section>
-        <h2>Clientes</h2>
-        <ul><li class="empty">—</li></ul>
-      </section>
-      <section>
-        <h2>Formación</h2>
-        <ul><li class="empty">—</li></ul>
-      </section>
-    </aside>
+    <div class="about-info">
+      <div class="about-bio">
+        {bio.map((p) => <p>{p}</p>)}
+      </div>
+      {sections.map((s) => (
+        <section>
+          <h2>{s.title}</h2>
+          <ul>{s.items.map((item) => <li>{item}</li>)}</ul>
+        </section>
+      ))}
+    </div>
   </div>
 </Base>
+
+<script>
+  // En computador, la rueda sobre la foto también desplaza la columna de información
+  const info = document.querySelector<HTMLElement>('.about-info');
+  document.querySelector('.about-photo')?.addEventListener(
+    'wheel',
+    (e) => {
+      if (!info || info.scrollHeight <= info.clientHeight) return;
+      e.preventDefault();
+      info.scrollTop += (e as WheelEvent).deltaY;
+    },
+    { passive: false },
+  );
+</script>

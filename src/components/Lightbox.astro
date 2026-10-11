@@ -1,0 +1,96 @@
+---
+// Visor de fotos de las fichas: al hacer clic en una foto de la galería se abre en grande sobre
+// la página. Flechas (teclado o botones) o deslizar con el dedo para pasar; Esc, "Close" o un clic
+// fuera de la foto para cerrar.
+---
+
+<div class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Visor de fotos">
+  <img class="lb-img" alt="" />
+  <button type="button" class="lb-close">Close</button>
+  <button type="button" class="lb-prev" aria-label="Foto anterior">Prev</button>
+  <span class="lb-count"></span>
+  <button type="button" class="lb-next" aria-label="Foto siguiente">Next</button>
+</div>
+
+<style is:global>
+  .lightbox {
+    position: fixed; inset: 0; z-index: 900;
+    display: grid; place-items: center;
+    padding: 56px var(--margin) 64px;
+    background: var(--white);
+  }
+  .lightbox[hidden] { display: none; }
+  .lb-img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+  .lightbox button {
+    position: absolute; font: inherit; color: var(--black);
+    background: none; border: 0; padding: 8px 0; cursor: pointer;
+  }
+  .lightbox button:hover { text-decoration: underline; }
+  .lb-close { top: 16px; right: var(--margin); }
+  .lb-prev { bottom: 16px; left: var(--margin); }
+  .lb-next { bottom: 16px; right: var(--margin); }
+  .lb-count { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: var(--gray); }
+  .work [class^='gallery'] img { cursor: zoom-in; }
+</style>
+
+<script>
+  const box = document.querySelector<HTMLElement>('.lightbox');
+  const photos = [...document.querySelectorAll<HTMLImageElement>('.work [class^="gallery"] img')];
+
+  if (box && photos.length) {
+    const img = box.querySelector<HTMLImageElement>('.lb-img')!;
+    const count = box.querySelector<HTMLElement>('.lb-count')!;
+    let current = 0;
+    let lastFocus: HTMLElement | null = null;
+
+    const show = (i: number) => {
+      current = (i + photos.length) % photos.length;
+      const p = photos[current];
+      // Misma foto, pero pidiendo la versión grande (ocupa toda la pantalla)
+      img.sizes = '100vw';
+      img.srcset = p.srcset;
+      img.src = p.src;
+      img.alt = p.alt;
+      count.textContent = `${current + 1} / ${photos.length}`;
+    };
+    const open = (i: number) => {
+      lastFocus = document.activeElement as HTMLElement;
+      show(i);
+      box.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      box.querySelector<HTMLElement>('.lb-close')!.focus();
+    };
+    const close = () => {
+      box.hidden = true;
+      document.documentElement.style.overflow = '';
+      lastFocus?.focus();
+    };
+
+    photos.forEach((p, i) => p.addEventListener('click', () => open(i)));
+    box.querySelector('.lb-prev')!.addEventListener('click', () => show(current - 1));
+    box.querySelector('.lb-next')!.addEventListener('click', () => show(current + 1));
+    box.querySelector('.lb-close')!.addEventListener('click', close);
+    // Clic fuera de la foto (en el fondo) cierra
+    box.addEventListener('click', (e) => { if (e.target === box) close(); });
+    // Clic en la foto: mitad izquierda = anterior, mitad derecha = siguiente
+    img.addEventListener('click', (e) => {
+      const r = img.getBoundingClientRect();
+      show(current + (e.clientX < r.left + r.width / 2 ? -1 : 1));
+    });
+
+    addEventListener('keydown', (e) => {
+      if (box.hidden) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+
+    // Deslizar con el dedo en celular
+    let startX = 0;
+    box.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+    box.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>
