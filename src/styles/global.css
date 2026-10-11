@@ -175,6 +175,7 @@ main { flex: 1; padding: 0 var(--margin) calc(var(--margin) * 3); }
    con letra de 16px): esa línea marca el borde derecho de todo el texto */
 .about-info { max-width: 30.5em; }
 .about-bio p + p { margin-top: 1em; }
+.about-bio a { text-decoration: underline; }
 .about-info section { margin-top: 32px; }
 .about-bio + section { margin-top: var(--work-step); }
 .about-info h2 {
