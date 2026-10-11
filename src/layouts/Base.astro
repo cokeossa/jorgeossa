@@ -33,6 +33,7 @@ const menu = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />
+    <meta name="author" content={SITE.fullName} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -41,7 +42,7 @@ const menu = [
   </head>
   <body>
     <header class="header">
-      <a href="/">{SITE.name}</a>
+      <a href="/" class="logo">{SITE.name}</a>
       <nav>
         <ul>
           {menu.map((item) => (

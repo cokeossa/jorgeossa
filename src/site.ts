@@ -1,7 +1,8 @@
 // Datos generales del sitio. Cambiar aquí, se actualiza en todas las páginas.
 export const SITE = {
-  name: 'Jorge Ossa Silva',
-  description: 'Director creativo, productor de video y fotógrafo. Santiago, Chile.',
+  name: 'JOS', // seudónimo: logo y títulos de pestaña
+  fullName: 'Jorge Ossa Silva', // para buscadores
+  description: 'JOS (Jorge Ossa Silva). Director creativo, productor de video y fotógrafo. Santiago, Chile.',
   lang: 'es',
   email: '', // pendiente
   instagram: '', // URL completa, pendiente
