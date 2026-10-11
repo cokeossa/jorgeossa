@@ -8,7 +8,7 @@ import { z } from 'astro/zod';
 const ficha = ({ image }: { image: () => any }) =>
   z.object({
     title: z.string(),
-    year: z.number(),
+    year: z.number().optional(),
     client: z.string().optional(), // cliente o contexto
     description: z.string().optional(), // una línea
     cover: image(),
@@ -24,7 +24,7 @@ const artworks = defineCollection({
   loader: glob({ pattern: '*/index.md', base: './src/content/artworks' }),
   schema: ({ image }) =>
     ficha({ image }).extend({
-      filters: z.array(z.enum(['fotografia', 'video', 'books', 'commercial'])).min(1),
+      filters: z.array(z.enum(['fotografia', 'video', 'books', 'commercial'])).default([]),
     }),
 });
 

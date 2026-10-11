@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Grid from '../../components/Grid.astro';
 
 const projects = (await getCollection('personal', ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.order - b.data.order || b.data.year - a.data.year,
+  (a, b) => a.data.order - b.data.order || (b.data.year ?? 0) - (a.data.year ?? 0),
 );
 ---
 

@@ -19,7 +19,7 @@ const { entries, base } = Astro.props;
             src={entry.data.cover}
             alt={entry.data.title}
             widths={[400, 700, 1000]}
-            sizes="(min-width: 800px) 33vw, 50vw"
+            sizes="(min-width: 1000px) 33vw, (min-width: 600px) 50vw, 100vw"
             loading={i < 6 ? 'eager' : 'lazy'}
           />
         </div>
