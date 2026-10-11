@@ -28,7 +28,10 @@ const controls = [
 <div id="tp" class="tp">
   <div class="tp-head">
     <strong>Panel de ajuste</strong>
-    <button type="button" data-act="toggle">–</button>
+    <span>
+      <button type="button" data-act="guides">Ver grilla</button>
+      <button type="button" data-act="toggle">–</button>
+    </span>
   </div>
   <div class="tp-body">
     {controls.map((c) =>
@@ -63,7 +66,20 @@ const controls = [
   </div>
 </div>
 
+<div class="tp-guides" aria-hidden="true"></div>
+
 <style is:global>
+  /* Guías: columnas y márgenes dibujados sobre la página */
+  .tp-guides {
+    position: fixed; inset: 0; z-index: 999; pointer-events: none; display: none;
+    padding: 0 var(--margin);
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); column-gap: var(--gap);
+  }
+  .tp-guides span { background: rgba(255, 0, 80, 0.07); border-left: 1px solid rgba(255, 0, 80, 0.5); border-right: 1px solid rgba(255, 0, 80, 0.5); }
+  .tp-show-guides .tp-guides { display: grid; }
+  .tp-show-guides .grid li { outline: 1px dashed rgba(255, 0, 80, 0.6); }
+  .tp-show-guides .header, .tp-show-guides .filters { outline: 1px dashed rgba(0, 120, 255, 0.5); }
+  .tp button.on { background: #000; color: #fff; }
   .tp {
     position: fixed; right: 12px; bottom: 12px; z-index: 1000; width: 280px;
     max-height: calc(100vh - 24px); overflow: auto;
@@ -141,8 +157,27 @@ const controls = [
     syncItem();
     if (!items.length) pick.closest('label').parentElement.querySelectorAll('#tp-item, #tp-item-size').forEach((el) => (el.disabled = true));
 
+    // Guías de grilla: una franja por columna, se actualizan solas al mover los controles
+    const guides = document.querySelector('.tp-guides');
+    const guidesBtn = panel.querySelector('[data-act="guides"]');
+    const drawGuides = () => {
+      const n = parseInt(getComputedStyle(root).getPropertyValue('--columns'));
+      if (guides.children.length !== n) guides.replaceChildren(...Array.from({ length: n }, () => document.createElement('span')));
+    };
+    const setGuides = (on) => {
+      root.classList.toggle('tp-show-guides', on);
+      guidesBtn.classList.toggle('on', on);
+      guidesBtn.textContent = on ? 'Ocultar grilla' : 'Ver grilla';
+      drawGuides();
+      try { localStorage.setItem(KEY + '-guides', on ? '1' : ''); } catch {}
+    };
+    setGuides(localStorage.getItem(KEY + '-guides') === '1');
+    panel.addEventListener('input', drawGuides);
+    addEventListener('resize', drawGuides);
+
     panel.addEventListener('click', (e) => {
       const act = e.target.dataset?.act;
+      if (act === 'guides') setGuides(!root.classList.contains('tp-show-guides'));
       if (act === 'toggle') {
         panel.classList.toggle('closed');
         e.target.textContent = panel.classList.contains('closed') ? '+' : '–';
