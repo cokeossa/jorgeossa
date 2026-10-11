@@ -8,7 +8,13 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, heading, year, client, description, cover, gallery, video } = entry.data;
+const { title, heading, year, client, description, cover, gallery, video, galleryLayout: layout } = entry.data;
+
+// Collage ("free"): las cajas vienen en % del ancho; el alto total se calcula con la caja más baja
+const boxes = layout.type === 'free' ? layout.boxes ?? [] : [];
+const freeHeight = Math.max(0, ...boxes.map(([, y, , h]) => y + h));
+const boxStyle = ([x, y, w, h]: number[]) =>
+  `--x:${x}%;--y:${(y / freeHeight) * 100}%;--w:${w}%;--h:${(h / freeHeight) * 100}%`;
 const embed = video ? embedUrl(video) : null;
 const meta = [year, client].filter(Boolean).join(' · ');
 const { Content } = await render(entry);
@@ -33,8 +39,26 @@ const { Content } = await render(entry);
     <Content />
   </div>
 
-  {gallery.length > 0 && (
-    <div class="work-gallery">
+  {gallery.length > 0 && layout.type === 'free' && boxes.length === gallery.length && (
+    <div class="gallery-free" style={`--free-height:${freeHeight}%`}>
+      {gallery.map((img, i) => (
+        <div class="box" style={boxStyle(boxes[i])}>
+          <Image src={img} alt={title} widths={[500, 900, 1400, 2000]} sizes={`(min-width: 800px) ${Math.ceil(boxes[i][2])}vw, 100vw`} />
+        </div>
+      ))}
+    </div>
+  )}
+
+  {gallery.length > 0 && layout.type === 'grid' && (
+    <div class="gallery-grid" style={`--g-columns:${layout.columns};--g-ratio:${layout.ratio ?? 'auto'}`}>
+      {gallery.map((img) => (
+        <Image src={img} alt={title} widths={[400, 700, 1000, 1400]} sizes={`(min-width: 800px) ${Math.ceil(100 / layout.columns)}vw, 50vw`} />
+      ))}
+    </div>
+  )}
+
+  {gallery.length > 0 && (layout.type === 'stack' || (layout.type === 'free' && boxes.length !== gallery.length)) && (
+    <div class="gallery-stack">
       {gallery.map((img) => (
         <Image src={img} alt={title} widths={[700, 1200, 1800, 2500]} sizes="(min-width: 1164px) 1100px, 100vw" />
       ))}
