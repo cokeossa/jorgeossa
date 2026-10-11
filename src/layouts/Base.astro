@@ -17,9 +17,9 @@ const path = Astro.url.pathname;
 
 const menu = [
   { href: '/', label: 'Artworks', active: path === '/' || path.startsWith('/artworks') },
-  { href: '/personal/', label: 'Personal', active: path.startsWith('/personal') },
+  { href: '/photography/', label: 'Photography', active: path.startsWith('/photography') },
   { href: '/about/', label: 'About', active: path.startsWith('/about') },
-  { href: '/contacto/', label: 'Contacto', active: path.startsWith('/contacto') },
+  { href: '/contact/', label: 'Contact', active: path.startsWith('/contact') },
 ];
 ---
 

@@ -169,6 +169,6 @@ Recomendación: publicar el esqueleto en el dominio temprano (bloque 1) para que
 - `src/content.config.ts` → modelo de la ficha (campos y validación). `buyUrl` queda reservado para la futura tienda.
 - `src/site.ts` → nombre, email, Instagram, Vimeo, ciudad, lista de filtros.
 - `src/styles/global.css` → todos los valores de diseño (variables al inicio del archivo).
-- `src/pages/` → páginas: `index.astro` (Artworks + filtros), `personal/`, `about.astro`, `contacto.astro`.
+- `src/pages/` → páginas: `index.astro` (Artworks + filtros), `photography/` (menú "Photography"; usa la colección `personal`), `about.astro`, `contact.astro`. El sitio está en inglés.
 - `material/` → originales de JOS. No se sube al repo; de ahí se preparan las imágenes (sRGB, ~2500 px lado largo).
 - Comandos: `npm run dev` (vista previa local en localhost:4321), `npm run build` (verifica que todo compila).

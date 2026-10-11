@@ -10,7 +10,7 @@ const projects = (await getCollection('personal', ({ data }) => !data.draft)).so
 );
 ---
 
-<Base title="Personal">
+<Base title="Photography">
   <Filters filters={PERSONAL_FILTERS} label="Proyectos personales" />
-  {projects.length > 0 ? <Grid entries={projects} base="/personal" /> : <p class="empty">Proyectos en carga.</p>}
+  {projects.length > 0 ? <Grid entries={projects} base="/photography" /> : <p class="empty">Proyectos en carga.</p>}
 </Base>
