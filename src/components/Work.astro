@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, heading, year, client, description, gallery, video, galleryLayout: layout } = entry.data;
+const { title, heading, year, client, description, gallery, video, extraVideos, galleryLayout: layout } = entry.data;
 
 // Collage ("free"): las cajas vienen en % del ancho; el alto total se calcula con la caja más baja
 const boxes = layout.type === 'free' ? layout.boxes ?? [] : [];
@@ -17,6 +17,15 @@ const freeHeight = Math.max(0, ...boxes.map(([, y, , h]) => y + h));
 const boxStyle = ([x, y, w, h]: number[]) =>
   `--x:${x}%;--y:${(y / freeHeight) * 100}%;--w:${w}%;--h:${(h / freeHeight) * 100}%`;
 const embed = video ? embedUrl(video) : null;
+const extraEmbeds = extraVideos.map(embedUrl).filter((u): u is string => Boolean(u));
+
+// Filas ("rows"): reparte la galería en filas según los números indicados (lo que sobre, una por fila)
+const rowGroups: (typeof gallery)[] = [];
+if (layout.type === 'rows') {
+  let i = 0;
+  for (const n of layout.rows ?? []) { if (i < gallery.length) rowGroups.push(gallery.slice(i, i + n)); i += n; }
+  for (; i < gallery.length; i++) rowGroups.push([gallery[i]]);
+}
 const meta = [year, client].filter(Boolean).join(' · ');
 const { Content } = await render(entry);
 const hasText = Boolean(entry.body?.trim());
@@ -39,6 +48,26 @@ const hasText = Boolean(entry.body?.trim());
   {hasText && (
     <div class="work-text">
       <Content />
+    </div>
+  )}
+
+  {extraEmbeds.map((src) => (
+    <div class="video">
+      <iframe src={src} title={title} allow="autoplay; fullscreen; picture-in-picture; clipboard-write" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+    </div>
+  ))}
+
+  {gallery.length > 0 && layout.type === 'rows' && (
+    <div class="gallery-rows">
+      {rowGroups.map((row) => (
+        <div class="row">
+          {row.map((img) => (
+            <div class="cell" style={`flex-grow:${(img.width / img.height).toFixed(4)}`}>
+              <Image quality={IMAGE_QUALITY} src={img} alt={title} widths={[500, 900, 1400, 2000]} sizes={`(min-width: 800px) ${Math.ceil(100 / row.length)}vw, 100vw`} />
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   )}
 

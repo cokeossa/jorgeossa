@@ -17,16 +17,20 @@ const ficha = ({ image }: { image: () => any }) =>
     // Disposición de la galería:
     //   grid  → grilla pareja: columns y ratio (recorte), ej. { type: grid, columns: 4, ratio: 4 / 3 }
     //   free  → collage: una caja [x, y, ancho, alto] por foto, en % del ancho de la página
+    //   rows  → filas sin recortes: cuántas fotos van en cada fila, ej. { type: rows, rows: [1, 5, 5, 2] };
+    //           las fotos de una fila quedan a la misma altura y llenan el ancho
     //   stack → una foto bajo otra (por defecto)
     galleryLayout: z
       .object({
-        type: z.enum(['stack', 'grid', 'free']),
+        type: z.enum(['stack', 'grid', 'free', 'rows']),
+        rows: z.array(z.number().int().min(1)).optional(),
         columns: z.number().default(2),
         ratio: z.string().optional(),
         boxes: z.array(z.array(z.number()).length(4)).optional(),
       })
       .default({ type: 'stack', columns: 2 }),
-    video: z.string().url().optional(), // URL de Vimeo o YouTube
+    video: z.string().url().optional(), // URL de Vimeo o YouTube (va arriba, bajo el título)
+    extraVideos: z.array(z.string().url()).default([]), // más videos: van después del texto
     order: z.number().default(0), // menor número = más arriba en la grilla
     size: z.number().min(10).max(100).optional(), // % del ancho de su columna en la grilla (100 = completo)
     draft: z.boolean().default(false), // true = no se publica

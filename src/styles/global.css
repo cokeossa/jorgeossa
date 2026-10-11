@@ -156,6 +156,12 @@ main { flex: 1; padding: 0 var(--margin) calc(var(--margin) * 3); }
 }
 .gallery-grid img { width: 100%; height: 100%; aspect-ratio: var(--g-ratio); object-fit: cover; }
 .gallery-free { display: grid; gap: var(--gap); }
+/* Filas: cada foto crece según su proporción, así todas las de una fila quedan a la misma altura */
+.gallery-rows { display: grid; gap: var(--gap); }
+.gallery-rows .row { display: flex; flex-direction: column; gap: var(--gap); }
+.gallery-rows .cell { flex-basis: 0; min-width: 0; }
+.gallery-rows img { width: 100%; }
+@media (min-width: 800px) { .gallery-rows .row { flex-direction: row; } }
 .gallery-free .box img { width: 100%; }
 @media (min-width: 800px) {
   .gallery-grid { grid-template-columns: repeat(var(--g-columns), minmax(0, 1fr)); }
