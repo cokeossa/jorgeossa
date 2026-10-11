@@ -8,24 +8,28 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, year, client, description, cover, gallery, video } = entry.data;
+const { title, heading, year, client, description, cover, gallery, video } = entry.data;
 const embed = video ? embedUrl(video) : null;
+const meta = [year, client].filter(Boolean).join(' · ');
 const { Content } = await render(entry);
 ---
 
 <article class="work">
+  <header class="work-head">
+    <h1>{heading ?? title}</h1>
+    {meta && <p class="muted">{meta}</p>}
+    {description && <p>{description}</p>}
+  </header>
+
   {embed ? (
     <div class="video">
-      <iframe src={embed} title={title} allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <iframe src={embed} title={title} allow="autoplay; fullscreen; picture-in-picture; clipboard-write" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
   ) : (
     <Image src={cover} alt={title} widths={[700, 1200, 1800, 2500]} sizes="(min-width: 1164px) 1100px, 100vw" loading="eager" />
   )}
 
-  <div class="work-info">
-    <h1>{title}</h1>
-    <p class="muted">{[year, client].filter(Boolean).join(' · ')}</p>
-    {description && <p>{description}</p>}
+  <div class="work-text">
     <Content />
   </div>
 

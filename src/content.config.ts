@@ -8,6 +8,7 @@ import { z } from 'astro/zod';
 const ficha = ({ image }: { image: () => any }) =>
   z.object({
     title: z.string(),
+    heading: z.string().optional(), // título dentro de la ficha, si es distinto al de la grilla
     year: z.number().optional(),
     client: z.string().optional(), // cliente o contexto
     description: z.string().optional(), // una línea
