@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE } from '../site';
+import TuningPanel from '../components/TuningPanel.astro';
 
 interface Props {
   title?: string;
@@ -54,5 +55,6 @@ const menu = [
     <main>
       <slot />
     </main>
+    {import.meta.env.DEV && <TuningPanel />}
   </body>
 </html>
