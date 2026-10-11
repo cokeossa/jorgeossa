@@ -4,7 +4,7 @@ export const SITE = {
   fullName: 'Jorge Ossa Silva', // para buscadores
   description: 'JOS (Jorge Ossa Silva). Director creativo, productor de video y fotógrafo. Santiago, Chile.',
   lang: 'es',
-  email: '', // pendiente
+  email: 'jos@espacioblan.co',
   instagram: 'https://www.instagram.com/cokeossa/',
   spotify: 'https://open.spotify.com/user/cokeossasilva',
   youtube: 'https://www.youtube.com/channel/UChFEjgo4E8fyPB8PsKuJlFA',

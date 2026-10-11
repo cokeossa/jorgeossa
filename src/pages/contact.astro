@@ -5,7 +5,7 @@ import { SITE } from '../site';
 
 <Base title="Contact">
   <ul>
-    {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
+    {SITE.email && <li>{SITE.email}</li>}
     {SITE.instagram && <li><a href={SITE.instagram}>Instagram</a></li>}
     {SITE.vimeo && <li><a href={SITE.vimeo}>Vimeo</a></li>}
     <li class="muted">{SITE.city}</li>

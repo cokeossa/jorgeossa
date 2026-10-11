@@ -12,14 +12,24 @@ const bio = [
   'Life is a series of moments, and the camera is how I keep them. After a year in Barcelona finishing my master’s, I came back to keep building documentary projects like Palma Chilena, while directing and shooting film and photography for others.',
 ];
 
-// Credenciales. "—" = por completar.
+// Credenciales. Una sección sin ítems no se muestra (ej. Clients, mientras se define).
 const sections = [
   { title: 'Exhibitions', items: ['2026 — “Paisaje y Naturaleza”, Factoría Franklin'] },
-  { title: 'Awards', items: ['—'] },
-  { title: 'Collaborations', items: ['—'] },
-  { title: 'Clients', items: ['—'] },
-  { title: 'Education', items: ['—'] },
-];
+  {
+    title: 'Recognitions',
+    items: ['2025 — ADG Laus Gold, Brand Strategy', '2024 — ADG Laus Silver, Advertising'],
+  },
+  { title: 'Collaborations', items: ['Sin Título 1 Design Studio'] },
+  { title: 'Clients', items: [] },
+  {
+    title: 'Education',
+    items: [
+      'Master’s Degree in Creative Direction and Design in Communication Strategies — Elisava, Barcelona, Spain',
+      'Documentary Photography — Fotodesign Chile',
+      'Business Engineering — Universidad Andrés Bello, Santiago, Chile',
+    ],
+  },
+].filter((s) => s.items.length > 0);
 ---
 
 <Base title="About">
