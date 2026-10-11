@@ -151,8 +151,9 @@ Recomendación: publicar el esqueleto en el dominio temprano (bloque 1) para que
 ## Preguntas abiertas
 
 - [x] Dominio: jorgeossa.com (Cloudflare DNS → Vercel). La dirección oficial es www.jorgeossa.com; jorgeossa.com redirige ahí.
-- [ ] Idioma del sitio: inglés, español o bilingüe.
-- [ ] Personal: página larga tipo fotolibro por proyecto, o misma ficha que Artworks.
+- [x] Idioma del sitio: inglés (menú Artworks · Photography · About · Contact). Pendiente traducir los textos que siguen en español (filtros de Artworks, avisos "en carga").
+- [x] Personal: pasó a llamarse **Photography** en el menú. Filtros Personal · Palma Chilena · Barcelona, cada uno una tira horizontal de fotos inspirada en aracelipaz.com.
+- [x] Inicio: una sola foto centrada (como photobyjos.com). Redes (Instagram, Spotify, YouTube) arriba a la derecha y © en el pie, en todas las páginas.
 - [ ] Commercial: ¿incluye trabajos de Espacio Blanco y Pinot, o solo encargos de foto y video?
 - [ ] Primer trabajo de video a mostrar (por ejemplo, el comercial de Commencal) y si ya está listo para publicarse.
 
