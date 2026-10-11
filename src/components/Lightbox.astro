@@ -1,35 +1,52 @@
 ---
-// Visor de fotos de las fichas: al hacer clic en una foto de la galería se abre en grande sobre
-// la página. Flechas (teclado o botones) o deslizar con el dedo para pasar; Esc, "Close" o un clic
-// fuera de la foto para cerrar.
+// Visor de fotos de las fichas: al hacer clic en una foto, crece desde su miniatura hasta el centro
+// de la pantalla sobre una capa difuminada (la página se ve detrás). Se cierra con la X, con un clic
+// fuera de la foto o con Esc. Flechas (pantalla o teclado) o deslizar con el dedo para pasar de foto.
 ---
 
 <div class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Visor de fotos">
   <img class="lb-img" alt="" />
-  <button type="button" class="lb-close">Close</button>
-  <button type="button" class="lb-prev" aria-label="Foto anterior">Prev</button>
-  <span class="lb-count"></span>
-  <button type="button" class="lb-next" aria-label="Foto siguiente">Next</button>
+  <button type="button" class="lb-close" aria-label="Cerrar">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
+  </button>
+  <button type="button" class="lb-prev" aria-label="Foto anterior">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8" /></svg>
+  </button>
+  <button type="button" class="lb-next" aria-label="Foto siguiente">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" /></svg>
+  </button>
 </div>
 
 <style is:global>
   .lightbox {
     position: fixed; inset: 0; z-index: 900;
     display: grid; place-items: center;
-    padding: 56px var(--margin) 64px;
-    background: var(--white);
+    /* Capa difuminada: la página se sigue viendo detrás */
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    opacity: 0; transition: opacity 0.35s ease;
   }
+  .lightbox.is-open { opacity: 1; }
   .lightbox[hidden] { display: none; }
-  .lb-img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
-  .lightbox button {
-    position: absolute; font: inherit; color: var(--black);
-    background: none; border: 0; padding: 8px 0; cursor: pointer;
+  /* Centrada, con el mismo aire alrededor en los cuatro lados */
+  .lb-img {
+    max-width: calc(100vw - 2 * var(--lb-space)); max-height: calc(100svh - 2 * var(--lb-space));
+    width: auto; height: auto; object-fit: contain;
+    box-shadow: none; will-change: transform;
   }
-  .lightbox button:hover { text-decoration: underline; }
-  .lb-close { top: 16px; right: var(--margin); }
-  .lb-prev { bottom: 16px; left: var(--margin); }
-  .lb-next { bottom: 16px; right: var(--margin); }
-  .lb-count { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: var(--gray); }
+  .lightbox { --lb-space: 72px; }
+  @media (max-width: 799px) { .lightbox { --lb-space: 16px; } }
+  .lightbox button {
+    position: absolute; display: grid; place-items: center;
+    width: 44px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--black);
+  }
+  .lightbox button svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .lb-close { top: 14px; right: calc(var(--margin) - 12px); }
+  .lb-prev, .lb-next { top: 50%; transform: translateY(-50%); }
+  .lb-prev { left: calc(var(--margin) / 2 - 10px); }
+  .lb-next { right: calc(var(--margin) / 2 - 10px); }
+  @media (max-width: 799px) { .lb-prev, .lb-next { display: none; } } /* en celular se desliza */
   .work [class^='gallery'] img { cursor: zoom-in; }
 </style>
 
@@ -39,50 +56,86 @@
 
   if (box && photos.length) {
     const img = box.querySelector<HTMLImageElement>('.lb-img')!;
-    const count = box.querySelector<HTMLElement>('.lb-count')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ease = 'cubic-bezier(0.2, 0.7, 0.2, 1)';
     let current = 0;
     let lastFocus: HTMLElement | null = null;
+    // Espera a que termine una animación, pero nunca más de `ms` (por si el navegador la pausa)
+    const done = (a: Animation, ms: number) => Promise.race([a.finished, new Promise((r) => setTimeout(r, ms))]);
 
-    const show = (i: number) => {
+    // Transformación que lleva la foto grande (centrada) a la posición de su miniatura
+    const fromThumb = (thumb: HTMLImageElement) => {
+      const t = thumb.getBoundingClientRect();
+      const f = img.getBoundingClientRect();
+      const dx = t.left + t.width / 2 - (f.left + f.width / 2);
+      const dy = t.top + t.height / 2 - (f.top + f.height / 2);
+      const s = Math.max(t.width / f.width, t.height / f.height);
+      return `translate(${dx}px, ${dy}px) scale(${s})`;
+    };
+
+    // Muestra primero la versión ya cargada de la miniatura y cambia a la grande cuando llega
+    const load = async (i: number) => {
       current = (i + photos.length) % photos.length;
       const p = photos[current];
-      // Misma foto, pero pidiendo la versión grande (ocupa toda la pantalla)
-      img.sizes = '100vw';
-      img.srcset = p.srcset;
-      img.src = p.src;
+      img.removeAttribute('srcset');
+      img.src = p.currentSrc || p.src;
       img.alt = p.alt;
-      count.textContent = `${current + 1} / ${photos.length}`;
+      const big = new Image();
+      big.onload = () => {
+        if (photos[current] === p) { img.sizes = '100vw'; img.srcset = p.srcset; }
+      };
+      big.sizes = '100vw';
+      big.srcset = p.srcset;
+      big.src = p.src;
+      // Espera a que la miniatura esté lista para medirla (con tope, por si el navegador la pausa)
+      await Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 300))]);
     };
-    const open = (i: number) => {
+
+    const open = async (i: number) => {
       lastFocus = document.activeElement as HTMLElement;
-      show(i);
       box.hidden = false;
       document.documentElement.style.overflow = 'hidden';
-      box.querySelector<HTMLElement>('.lb-close')!.focus();
+      await load(i);
+      requestAnimationFrame(() => box.classList.add('is-open'));
+      if (!reduce) img.animate([{ transform: fromThumb(photos[current]) }, { transform: 'none' }], { duration: 450, easing: ease });
+      box.querySelector<HTMLElement>('.lb-close')!.focus({ preventScroll: true });
     };
-    const close = () => {
+
+    const close = async () => {
+      if (box.hidden) return;
+      box.classList.remove('is-open');
+      const thumb = photos[current];
+      const r = thumb.getBoundingClientRect();
+      const visible = r.bottom > 0 && r.top < innerHeight;
+      if (!reduce && visible) {
+        await done(img.animate([{ transform: 'none' }, { transform: fromThumb(thumb) }], { duration: 350, easing: ease }), 450);
+      } else {
+        await new Promise((res) => setTimeout(res, 200));
+      }
+      img.getAnimations().forEach((a) => a.cancel());
       box.hidden = true;
       document.documentElement.style.overflow = '';
-      lastFocus?.focus();
+      lastFocus?.focus({ preventScroll: true });
+    };
+
+    const step = async (d: number) => {
+      if (!reduce) await done(img.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120 }), 200);
+      await load(current + d);
+      if (!reduce) img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180 });
     };
 
     photos.forEach((p, i) => p.addEventListener('click', () => open(i)));
-    box.querySelector('.lb-prev')!.addEventListener('click', () => show(current - 1));
-    box.querySelector('.lb-next')!.addEventListener('click', () => show(current + 1));
+    box.querySelector('.lb-prev')!.addEventListener('click', () => step(-1));
+    box.querySelector('.lb-next')!.addEventListener('click', () => step(1));
     box.querySelector('.lb-close')!.addEventListener('click', close);
-    // Clic fuera de la foto (en el fondo) cierra
+    // Clic en cualquier parte fuera de la foto (la capa difuminada) cierra
     box.addEventListener('click', (e) => { if (e.target === box) close(); });
-    // Clic en la foto: mitad izquierda = anterior, mitad derecha = siguiente
-    img.addEventListener('click', (e) => {
-      const r = img.getBoundingClientRect();
-      show(current + (e.clientX < r.left + r.width / 2 ? -1 : 1));
-    });
 
     addEventListener('keydown', (e) => {
       if (box.hidden) return;
       if (e.key === 'Escape') close();
-      if (e.key === 'ArrowLeft') show(current - 1);
-      if (e.key === 'ArrowRight') show(current + 1);
+      if (e.key === 'ArrowLeft') step(-1);
+      if (e.key === 'ArrowRight') step(1);
     });
 
     // Deslizar con el dedo en celular
@@ -90,7 +143,7 @@
     box.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
     box.addEventListener('touchend', (e) => {
       const dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
     });
   }
 </script>
