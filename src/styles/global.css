@@ -1,8 +1,8 @@
 /* Valores de diseño. Se afinan en el bloque 2 con el panel de ajuste. */
 :root {
   --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --text-size: 14px;
-  --logo-size: 22px;
+  --text-size: 16px;
+  --logo-size: 24px;
   --filter-size: 12px;
   --line: 1.45;
   --title-size: 14px; /* nombre bajo cada miniatura */
@@ -26,10 +26,20 @@
 @media (min-width: 600px) {
   :root { --columns: 2; --gap: 24px; --row-gap: 40px; }
 }
+/* Computador: valores elegidos por JOS con el panel de ajuste (11 oct 2026, pantalla de 1804px) */
 @media (min-width: 1000px) {
   :root {
-    --margin: 48px; --gap: 40px; --row-gap: 60px; --columns: 3;
-    --header-top: 28px; --header-bottom: 40px; --logo-gap: 80px; --menu-gap: 40px;
+    --columns: 3;
+    --cover-size: 75%;
+    --margin: 70px;
+    --gap: 30px;
+    --row-gap: 44px;
+    --title-gap: 11px;
+    --header-top: 25px;
+    --logo-gap: 147px;
+    --menu-gap: 65px;
+    --header-bottom: 35px;
+    --filters-bottom: 24px;
   }
 }
 
