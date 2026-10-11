@@ -171,7 +171,9 @@ main { flex: 1; padding: 0 var(--margin) calc(var(--margin) * 3); }
    desplaza: menú, foto y pie quedan quietos y solo se mueve la columna de información. */
 .about { display: grid; gap: 32px; }
 .about-photo img { width: 100%; }
-.about-info { max-width: 560px; }
+/* Ancho de la columna = hasta donde termina "…Design in Communication" en Education (30.5em ≈ 488px
+   con letra de 16px): esa línea marca el borde derecho de todo el texto */
+.about-info { max-width: 30.5em; }
 .about-bio p + p { margin-top: 1em; }
 .about-info section { margin-top: 32px; }
 .about-bio + section { margin-top: var(--work-step); }
