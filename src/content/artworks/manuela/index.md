@@ -1,7 +1,7 @@
 ---
 title: "Manuela"
 # year: 
-filters: []        # fotografia | video | books | commercial (pendiente)
+filters: [fotografia]        # fotografia | video | books | commercial
 # client: ""
 # description: ""
 cover: ./cover.jpg

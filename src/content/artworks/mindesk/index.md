@@ -1,7 +1,7 @@
 ---
 title: "MINDESK"
 # year: 
-filters: []        # fotografia | video | books | commercial (pendiente)
+filters: [video]        # fotografia | video | books | commercial
 # client: ""
 # description: ""
 cover: ./cover.jpg

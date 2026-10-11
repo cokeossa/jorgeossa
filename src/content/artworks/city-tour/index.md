@@ -2,7 +2,7 @@
 title: "City Tour"
 heading: "City Tour - Barcelona"   # título dentro de la ficha (si es distinto al de la grilla)
 # year: 
-filters: []        # fotografia | video | books | commercial (pendiente)
+filters: [video]        # fotografia | video | books | commercial
 # client: ""
 # description: ""
 cover: ./cover.jpg
