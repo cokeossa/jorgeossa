@@ -28,7 +28,7 @@ Si el día se aprieta, se recorta la cantidad de trabajos cargados, nunca el Abo
 | Plataforma | Sitio a medida, construido con Claude Code. Sin CMS ni constructor visual. |
 | Código | Repositorio en GitHub (guarda el código y el historial de cambios). |
 | Hosting | Hosting estático conectado al repo (Vercel por defecto; Netlify es alternativa válida). Cada push a `main` publica. |
-| Migración | Redirección 301 de photobyjos.com a jorgeossasilva.com. Squarespace se cancela solo cuando el sitio nuevo esté en línea. |
+| Migración | Redirección 301 de photobyjos.com a jorgeossa.com. Squarespace se cancela solo cuando el sitio nuevo esté en línea. |
 | Tienda | No en esta versión. Más adelante, venta de algunos cuadros con un botón de pago por obra (Shopify Buy Button o Stripe Payment Links), embebido en el sitio. Dejar la estructura preparada para sumarlo sin rediseñar. |
 | Videos | Embebidos desde Vimeo o YouTube, nunca alojados como archivos en el repo. |
 
