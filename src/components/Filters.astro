@@ -5,11 +5,12 @@
 interface Props {
   filters: readonly { id: string; label: string }[];
   all?: string; // texto del botón que muestra todo (ej. "Todo"); sin él, parte en el primer filtro
+  initial?: string; // filtro con el que parte la página (si no se indica: "all" o el primero)
   label: string;
 }
 
 const { filters, all, label } = Astro.props;
-const initial = all ? 'all' : filters[0]?.id;
+const initial = Astro.props.initial ?? (all ? 'all' : filters[0]?.id);
 ---
 
 <div class="filters" role="group" aria-label={label} data-initial={initial}>
@@ -21,7 +22,8 @@ const initial = all ? 'all' : filters[0]?.id;
   const bar = document.querySelector<HTMLElement>('.filters');
   if (bar) {
     const buttons = [...bar.querySelectorAll<HTMLButtonElement>('button')];
-    const items = document.querySelectorAll<HTMLElement>('.grid li');
+    // Proyectos de la grilla (Artworks) o paneles de fotos (Photography)
+    const items = document.querySelectorAll<HTMLElement>('main [data-filters]');
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const apply = (filter: string) => {

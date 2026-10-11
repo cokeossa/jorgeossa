@@ -1,0 +1,44 @@
+---
+// Tira horizontal de fotos a la misma altura (inspirada en aracelipaz.com).
+// Bajar con la rueda o el trackpad la hace avanzar hacia el lado; en celular se desliza con el dedo.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'personal'>;
+}
+
+const { entry } = Astro.props;
+const { title, description, gallery } = entry.data;
+const H = 550; // alto de referencia en computador (el real lo define --strip-height)
+---
+
+<div class="strip">
+  {description && <p class="strip-caption">{description}</p>}
+  <div class="strip-track" tabindex="0" aria-label={title}>
+    {gallery.map((img, i) => {
+      const w = Math.round((H * img.width) / img.height);
+      return (
+        <Image src={img} alt={title} widths={[Math.round(w * 0.6), w, w * 2]} sizes={`${w}px`} loading={i < 4 ? 'eager' : 'lazy'} />
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  // La rueda del mouse o el trackpad (movimiento vertical) avanza la tira hacia el lado
+  document.querySelectorAll<HTMLElement>('.strip-track').forEach((track) => {
+    track.addEventListener(
+      'wheel',
+      (e) => {
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // gesto lateral: lo maneja el navegador
+        const max = track.scrollWidth - track.clientWidth;
+        const atEdge = (e.deltaY < 0 && track.scrollLeft <= 0) || (e.deltaY > 0 && track.scrollLeft >= max - 1);
+        if (atEdge) return;
+        e.preventDefault();
+        track.scrollLeft += e.deltaY;
+      },
+      { passive: false },
+    );
+  });
+</script>

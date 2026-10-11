@@ -18,6 +18,8 @@
   --logo-gap: 48px; /* espacio entre JOS y el menú */
   --menu-gap: 24px; /* espacio entre ítems del menú */
   --filters-bottom: 16px; /* espacio entre filtros y grilla */
+  --strip-height: min(550px, 62svh); /* alto de las fotos en Photography (como aracelipaz.com) */
+  --strip-gap: 15px; /* espacio entre fotos de la tira */
   --black: #000;
   --gray: #8a8a8a;
   --white: #fff;
@@ -49,6 +51,9 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
   background: var(--white);
   color: var(--black);
   font-family: var(--font);
@@ -80,7 +85,7 @@ ul { padding: 0; list-style: none; }
 .header nav ul { display: flex; flex-wrap: wrap; gap: 4px var(--menu-gap); }
 .header [aria-current='page'] { text-decoration: underline; }
 
-main { padding: 0 var(--margin) calc(var(--margin) * 3); }
+main { flex: 1; padding: 0 var(--margin) calc(var(--margin) * 3); }
 
 /* Grilla de trabajos */
 .grid {
@@ -148,3 +153,19 @@ main { padding: 0 var(--margin) calc(var(--margin) * 3); }
 }
 
 .empty { color: var(--gray); }
+
+/* Photography: tira horizontal centrada en el espacio bajo el menú, sale por el borde derecho */
+main:has(.strips-page) { display: flex; padding-bottom: var(--margin); }
+.strips-page { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.strip-panels { flex: 1; display: flex; align-items: center; min-width: 0; }
+.strip-panel { width: 100%; min-width: 0; }
+.strip-panel[hidden] { display: none; }
+.strip-caption { margin-bottom: 12px; }
+.strip-track {
+  display: flex; gap: var(--strip-gap);
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  margin-right: calc(-1 * var(--margin)); padding-right: var(--margin);
+}
+.strip-track::-webkit-scrollbar { display: none; }
+.strip-track:focus { outline: none; }
+.strip-track img { flex: none; height: var(--strip-height); width: auto; max-width: none; }

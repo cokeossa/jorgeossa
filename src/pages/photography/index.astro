@@ -1,16 +1,25 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Grid from '../../components/Grid.astro';
 import Filters from '../../components/Filters.astro';
+import Strip from '../../components/Strip.astro';
 import { PERSONAL_FILTERS } from '../../site';
 
-const projects = (await getCollection('personal', ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.order - b.data.order || (b.data.year ?? 0) - (a.data.year ?? 0),
-);
+const projects = (await getCollection('personal', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const panels = PERSONAL_FILTERS.map((f) => ({ ...f, items: projects.filter((p) => p.data.filters.includes(f.id)) }));
+// Mientras un filtro esté vacío, la página parte en el primero que tenga fotos
+const initial = panels.find((p) => p.items.length)?.id;
 ---
 
 <Base title="Photography">
-  <Filters filters={PERSONAL_FILTERS} label="Proyectos personales" />
-  {projects.length > 0 ? <Grid entries={projects} base="/photography" /> : <p class="empty">Proyectos en carga.</p>}
+  <div class="strips-page">
+    <Filters filters={PERSONAL_FILTERS} initial={initial} label="Proyectos de fotografía" />
+    <div class="strip-panels">
+      {panels.map((p) => (
+        <section class="strip-panel" data-filters={p.id} hidden={p.id !== initial}>
+          {p.items.length ? p.items.map((entry) => <Strip entry={entry} />) : <p class="empty">En carga.</p>}
+        </section>
+      ))}
+    </div>
+  </div>
 </Base>
